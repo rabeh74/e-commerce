@@ -36,7 +36,15 @@
                 <div class="aside"><img src="{{cart_item.prducts.images.url}} " class="img-sm"></div>
                 <figcaption class="info">
                     <a href="{{cart_item.prducts.get_url}}" class="title text-dark">{{cart_item.prducts.product_name}}</a>
-                    <p class="text-muted small">color: 25 Mpx <br> size: Canon</p>
+                    {% comment %} <p class="text-muted small">color: {{cart_items.}} <br> size: Canon</p> {% endcomment %}
+                    <p class="text-muted small">
+
+                        {% for var in cart_item.variation.all %}
+                         {{var.variation_category|capfirst}}:{{var.variation_value}}<br>
+
+                        {% endfor %}
+
+                    </p>
                 </figcaption>
             </figure>
         </td>
@@ -48,12 +56,19 @@
                         <div class="col">
                             <div class="input-group input-spinner">
                                 <div class="input-group-prepend">
-                                <a href="{% url 'remove-cart' cart_item.prducts.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
+                                <a href="{% url 'remove-cart' cart_item.prducts.id cart_item.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
                                 </div>
                                 <input type="text" class="form-control"  value="{{cart_item.quauntity}}">
                                 <div class="input-group-append">
-                                <a href="{% url 'add-cart' cart_item.prducts.id %}" class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </a>
-                                </div>
+                                <form action="{% url 'add-cart' cart_item.prducts.id  %}" method='POST'>
+                                    {% csrf_token %}
+                                    {% for item in cart_item.variation.all %}
+                                    <input type="hidden" name="{{item.variation_category | lower}}" value="{{item.variation_value | capfirst}}">
+
+                                    {% endfor %}
+                                    <button class="btn btn-light" type="submit" id="button-minus"> <i class="fa fa-plus"></i> </button>
+                                </form>
+                            </div>
                             </div> <!-- input-group.// -->
                         </div> <!-- col.// -->
         </td>
@@ -64,7 +79,7 @@
             </div> <!-- price-wrap .// -->
         </td>
         <td class="text-right">
-        <a href="{% url 'remove-cart-item' cart_item.prducts.id %}" class="btn btn-danger"> Remove</a>
+        <a href="{% url 'remove-cart-item' cart_item.prducts.id cart_item.id %}" class="btn btn-danger"> Remove</a>
         </td>
     </tr>
     {% endfor %}

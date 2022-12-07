@@ -1,6 +1,7 @@
 from django.db import models
-
+from uuid import uuid4
 from store.models import Products
+from store.models import Variation
 
 class Cart(models.Model):
 
@@ -11,6 +12,7 @@ class Cart(models.Model):
         return self.cart_id
 
 class CartItems(models.Model):
+    variation=models.ManyToManyField(Variation, blank=True)
     prducts=models.ForeignKey(Products, on_delete=models.CASCADE)
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
     quauntity=models.IntegerField()
@@ -22,7 +24,10 @@ class CartItems(models.Model):
 
 
     def __str__(self):
-        return self.product
+        return self.prducts.product_name
+    class Meta:
+        ordering=("-id",)
+
 
 
 

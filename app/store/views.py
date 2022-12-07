@@ -1,16 +1,20 @@
 from django.shortcuts import render,get_object_or_404
 from django.views.generic import ListView,TemplateView,DetailView
+from django.views.generic.edit import FormMixin
 from store.models import Products
 from category.models import Category
 from carts.models import CartItems
 from django.db.models import Q
+
+
 
 class HomeView(ListView):
     template_name='store/store.html'
     context_object_name='prod'
     model=Products
     queryset=Products.objects.all()
-    paginate_by=4
+    paginate_by=2
+
 
     def get_queryset(self):
         sulg=self.kwargs.get('slug' , None)
@@ -33,11 +37,13 @@ class ProductDetailView(DetailView):
     context_object_name='product'
     model=Products
 
+
     def _get_cart_id(self):
         cart_id=self.request.session.session_key
         if not cart_id:
             cart=self.request.session.create()
         return cart_id
+
     def get_object(self , queryset=None):
         cat=self.kwargs.get('cat_slug')
         slug=self.kwargs.get(self.slug_url_kwarg)
@@ -49,9 +55,9 @@ class ProductDetailView(DetailView):
         product=self.get_object()
         in_cart=CartItems.objects.filter(cart__cart_id=self._get_cart_id() , prducts=product).exists()
         context['in_cart']=in_cart
-
-
+        print(self.get_object())
         return context
+
 
 
 
