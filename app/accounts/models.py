@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser,PermissionsMixin
 
 class UserManager(BaseUserManager):
-    def create_user(self,user_name ,email,password=None , **kwargs):
+    def create_user(self,user_name ,first_name,last_name,email,password=None , **kwargs):
         if not email:
             raise ValueError('should enter email :')
         if not user_name:
@@ -10,7 +10,9 @@ class UserManager(BaseUserManager):
 
 
         user=self.model(
-            email=self.normalize_email(email),user_name=user_name, **kwargs
+            email=self.normalize_email(email),user_name=user_name,
+            last_name=last_name,
+            first_name=first_name,
             )
         user.set_password(password)
         user.save(using=self._db)
@@ -45,14 +47,14 @@ class User(AbstractBaseUser , PermissionsMixin):
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
     user_name=models.CharField(max_length=50 , unique=True)
-    phone_number=models.CharField(max_length=50 , unique=True , )
+    phone_number=models.CharField(max_length=50 ,)
     email=models.EmailField(max_length=254 , unique=True)
 
     date_joined=models.DateTimeField(auto_now_add=True)
     last_login=models.DateTimeField(auto_now_add=True)
     is_admin=models.BooleanField(default=False)
     is_staff=models.BooleanField(default=False)
-    is_active=models.BooleanField(default=True)
+    is_active=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
 
     USERNAME_FIELD='email'

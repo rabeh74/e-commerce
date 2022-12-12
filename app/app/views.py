@@ -10,4 +10,4 @@ class HomeView(ListView ):
 
     def get_queryset(self):
 
-        return self.queryset.filter(is_available=True)
+        return self.queryset.filter(is_available=True)[:4]

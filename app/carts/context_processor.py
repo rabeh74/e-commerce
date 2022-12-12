@@ -2,6 +2,7 @@ from carts.views import _get_cart_id
 from carts.models import Cart , CartItems
 
 def counter(request):
+    return(dict(cart_count={}))
     cart_count=0
     if 'admin' in request.path:
         return {}

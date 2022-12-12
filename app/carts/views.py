@@ -8,13 +8,6 @@ from django.views.generic.edit import FormMixin
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404,redirect
 
-
-def _get_cart_id(request):
-        cart_id=request.session.session_key
-        if not cart_id:
-            cart=request.session.create()
-        return cart_id
-
 class CartView(TemplateView):
 
     template_name='store/cart.html'
@@ -45,7 +38,9 @@ class CartView(TemplateView):
 def _get_cart_id(request):
         cart_id=request.session.session_key
         if not cart_id:
-            cart=srequest.session.create()
+            cart_id=request.session.create()
+            print(cart_id)
+        print(cart_id)
         return cart_id
 
 def add_to_cart(request , pk , item_id=None):
@@ -106,9 +101,10 @@ def add_to_cart(request , pk , item_id=None):
 
 def delete_from_cart(request , pk ,cart_pk):
     prducts=Products.objects.get(pk=pk)
+
     cart=Cart.objects.get(cart_id= _get_cart_id(request))
-    print('///' , ']]]]]]]',cart_pk)
     cart_item=CartItems.objects.get( cart=cart , prducts=prducts , id=cart_pk )
+
     try:
 
         if cart_item.quauntity <=1:
@@ -125,4 +121,5 @@ def delete_cart_item(request ,pk , cart_pk):
     cart=Cart.objects.get(cart_id= _get_cart_id(request))
     cart_item=CartItems.objects.get(pk=cart_pk , cart=cart , prducts=products)
     cart_item.delete()
+
     return redirect('cart')
