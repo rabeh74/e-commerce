@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.urls import reverse_lazy,reverse
 from accounts.forms import RegisterationFrom,Loginform
 from django.contrib.auth import get_user_model,logout
@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode , urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from carts.models import Cart,CartItems
+from carts.views import _get_cart_id
 
 
 class RegestraionView(SuccessMessageMixin,FormView):
@@ -63,6 +65,40 @@ class Login(LoginView):
         return super().form_invalid(form)
     def form_valid(self, form):
         messages.success(self.request , " You are now logged in ")
+        user=form.get_user()
+        try:
+            cart=Cart.objects.get(cart_id=_get_cart_id(self.request))
+            is_cart_items_exitst=CartItems.objects.filter(cart=cart).exists()
+            if is_cart_items_exitst:
+                items=CartItems.objects.filter(cart=cart)
+                product_var=[]
+                # items before login
+                not_login_item=[]
+                for item in items:
+                    variation=item.variation.all()
+                    product_var.append(list(variation))
+                    not_login_item.append(item)
+                # items fowned by user
+                cart_items=CartItems.objects.filter(user=user)
+                user_variations=[]
+                id=[]
+                for item in cart_items:
+                    user_variations.append(list(item.variation.all()))
+                    id.append(item.id)
+
+                for i,variation in enumerate(product_var):
+                    if variation in user_variations:
+                        cur_item_id=id[user_variations.index(variation)]
+                        item=CartItems.objects.get(pk=cur_item_id)
+                        item.quauntity +=1
+                        item.user=user
+                        item.save()
+                    else:
+                        cur_item=not_login_item[i]
+                        cur_item.user=user
+                        cur_item.save()
+        except:
+            pass
         return super().form_valid(form)
 
 
