@@ -15,7 +15,8 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title mb-4"> Billing Address </h4>
-            <form action="" method="POST">
+            <form action="{% url 'placeorder' %}" method="POST">
+                {% csrf_token %}
                 <div class="form-row">
                     <div class="col form-group">
                         <label for="">First Name</label>
@@ -39,11 +40,11 @@
                 <div class="form-row">
                     <div class="col form-group">
                         <label for="">Address Line 1</label>
-                        <input type="text" name="address1" class="form-control" required>
+                        <input type="text" name="address_line1" class="form-control" required>
                     </div>
                     <div class="col form-group">
                         <label for="">Address line 2</label>
-                        <input type="text" name="address2" class="form-control" required>
+                        <input type="text" name="address_line2" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -86,12 +87,14 @@
                     </tr>
                     </thead>
                     <tbody>
+
                     {% for cart_item in cart_items %}
                     <tr>
                         <td>
                             <figure class="itemside align-items-center">
                                 <div class="aside"><img src="{{cart_item.prducts.images.url}} " class="img-sm"></div>
                                 <figcaption class="info">
+
                                     <a href="{{cart_item.prducts.get_url}}" class="title text-dark">{{cart_item.prducts.product_name}}</a>
                                     {% comment %} <p class="text-muted small">color: {{cart_items.}} <br> size: Canon</p> {% endcomment %}
                                     <p class="text-muted small">

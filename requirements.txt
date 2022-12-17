@@ -5,3 +5,20 @@ drf-spectacular>=0.15.1,<0.16
 pillow>=8.2.0,<8.3.0
 graphene-django>=3.0
 django-filter >=22.0
+
+aniso8601
+asgiref
+django-graphql-auth
+django-graphql-jwt
+graphene
+
+graphql-core
+graphql-relay
+promise
+PyJWT
+pytz
+Rx
+singledispatch
+six
+sqlparse
+Unidecode

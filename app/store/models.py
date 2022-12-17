@@ -16,7 +16,7 @@ class Products(models.Model):
     slug=models.SlugField(max_length=255 , unique=True)
     price=models.IntegerField()
     description=models.TextField(blank=True)
-    images=models.ImageField(upload_to=category_image_file_path)
+    images=models.ImageField(upload_to=category_image_file_path , blank=True)
     stock=models.IntegerField()
     is_available=models.BooleanField(default=True)
     created_date=models.DateTimeField(auto_now_add=True)
